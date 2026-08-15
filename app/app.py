@@ -1,4 +1,11 @@
 from pathlib import Path
+import sys
+
+# Add project root to Python import path
+PROJECT_ROOT = Path(__file__).resolve().parents[1]
+
+if str(PROJECT_ROOT) not in sys.path:
+    sys.path.insert(0, str(PROJECT_ROOT))
 
 import joblib
 import numpy as np
@@ -7,6 +14,20 @@ import streamlit as st
 import plotly.graph_objects as go
 import shap
 
+from src.inference.feature_builder import build_patient_features
+# Add project root to Python import path
+PROJECT_ROOT = Path(__file__).resolve().parents[1]
+
+if str(PROJECT_ROOT) not in sys.path:
+    sys.path.insert(0, str(PROJECT_ROOT))
+
+import joblib
+import numpy as np
+import pandas as pd
+import streamlit as st
+import plotly.graph_objects as go
+import shap
+from src.inference.feature_builder import build_patient_features
 # ============================================================
 # PATHS
 # ============================================================
@@ -258,19 +279,13 @@ with st.sidebar:
 st.markdown(
     """
     <div class="hero">
-
         <h1>🧠 Parkinson AI</h1>
-
-        <p>
-        Explainable Parkinson's disease screening using
-        smartwatch movement sensor data.
-        </p>
-
+        <p>Explainable Parkinson's disease screening using
+        smartwatch movement sensor data.</p>
     </div>
     """,
     unsafe_allow_html=True,
 )
-
 
 # ============================================================
 # DASHBOARD
@@ -398,248 +413,430 @@ if page == "🏠 Dashboard":
 
 elif page == "🔬 Patient Assessment":
 
-    st.subheader("Patient Assessment")
+    st.subheader("New Patient Assessment")
 
     st.write(
-        "Select a patient from the processed dataset to test the "
-        "complete inference pipeline."
+        """
+        Upload smartwatch movement recordings for a new patient.
+        The system will extract sensor features, aggregate them
+        into the 112 features expected by the trained model, and
+        generate a Parkinson's prediction with SHAP explainability.
+        """
     )
 
-    patient_ids = dataset["patient_id"].tolist()
-
-    selected_patient = st.selectbox(
-        "Patient ID",
-        patient_ids,
+    uploaded_files = st.file_uploader(
+        "Upload smartwatch recordings",
+        type=["txt"],
+        accept_multiple_files=True,
+        help=(
+            "Upload the smartwatch movement recordings "
+            "belonging to one patient."
+        ),
     )
 
-    patient = dataset[
-        dataset["patient_id"] == selected_patient
-    ].iloc[[0]]
+    if uploaded_files:
 
-    if st.button(
-        "🚀 Run Parkinson Assessment",
-        type="primary",
-        use_container_width=True,
-    ):
-
-        result = predict_patient(patient)
-
-        st.markdown("### Assessment Result")
-
-        result_col, probability_col = st.columns([1, 1])
-
-        with result_col:
-
-            if result["prediction"] == 1:
-
-                st.markdown(
-                    """
-                    <div class="result-card">
-                        <div class="parkinson">
-                        🔴 Parkinson's Pattern Detected
-                        </div>
-                        <p>
-                        The model predicts the Parkinson's class.
-                        </p>
-                    </div>
-                    """,
-                    unsafe_allow_html=True,
-                )
-
-            else:
-
-                st.markdown(
-                    """
-                    <div class="result-card">
-                        <div class="healthy">
-                        🟢 Healthy Pattern
-                        </div>
-                        <p>
-                        The model predicts the Healthy class.
-                        </p>
-                    </div>
-                    """,
-                    unsafe_allow_html=True,
-                )
-
-        with probability_col:
-
-            probability = result["parkinson_probability"]
-
-            fig = go.Figure(
-                go.Indicator(
-                    mode="gauge+number",
-                    value=probability * 100,
-                    number={
-                        "suffix": "%",
-                    },
-                    title={
-                        "text": "Parkinson's Probability"
-                    },
-                    gauge={
-                        "axis": {
-                            "range": [0, 100]
-                        },
-                        "threshold": {
-                            "line": {
-                                "width": 4
-                            },
-                            "value": 50,
-                        },
-                    },
-                )
-            )
-
-            fig.update_layout(
-                height=280,
-                margin=dict(
-                    l=20,
-                    r=20,
-                    t=50,
-                    b=20,
-                ),
-            )
-
-            st.plotly_chart(
-                fig,
-                use_container_width=True,
-            )
-
-        st.markdown("### Prediction Probabilities")
-
-        p1, p2 = st.columns(2)
-
-        with p1:
-            st.metric(
-                "Healthy",
-                f"{result['healthy_probability'] * 100:.1f}%",
-            )
-
-        with p2:
-            st.metric(
-                "Parkinson's",
-                f"{result['parkinson_probability'] * 100:.1f}%",
-            )
-
-        st.markdown("### Patient Information")
-
-        actual_label = int(patient["label"].iloc[0])
-
-        st.write(
-            {
-                "Patient ID": selected_patient,
-                "Actual class": (
-                    "Parkinson's"
-                    if actual_label == 1
-                    else "Healthy"
-                ),
-                "Predicted class": (
-                    "Parkinson's"
-                    if result["prediction"] == 1
-                    else "Healthy"
-                ),
-            }
-        )
-        st.markdown("### 🧠 Why did the model make this prediction?")
-        explanation = result["explanation"]
-        top_explanation = explanation.head(10)
-        toward_parkinson = top_explanation[
-        top_explanation["shap_value"] > 0
-        ].copy()
-
-        toward_healthy = top_explanation[
-            top_explanation["shap_value"] < 0
-        ].copy()
-        chart_data = top_explanation.sort_values(
-            "shap_value"
+        st.success(
+            f"✓ {len(uploaded_files)} smartwatch recordings uploaded"
         )
 
-        fig = go.Figure()
-
-        fig.add_trace(
-            go.Bar(
-                x=chart_data["shap_value"],
-                y=chart_data["feature"],
-                orientation="h",
-                text=chart_data["shap_value"].round(4),
-                textposition="outside",
-            )
-        )
-
-        fig.add_vline(
-            x=0,
-            line_width=2,
-        )
-
-        fig.update_layout(
-            title="Patient-specific SHAP explanation",
-            xaxis_title="Contribution toward Parkinson's prediction",
-            yaxis_title="Feature",
-            height=500,
-            margin=dict(
-                l=20,
-                r=40,
-                t=60,
-                b=40,
-            ),
-        )
-
-        st.plotly_chart(
-            fig,
+        if st.button(
+            "🚀 Analyze New Patient",
+            type="primary",
             use_container_width=True,
-        )
+        ):
 
-        st.markdown("#### 🟢 Factors pushing the prediction toward Healthy")
+            import tempfile
 
-        if len(toward_healthy) == 0:
-            st.info("No strong Healthy-direction features were found.")
-        else:
-            for _, row in toward_healthy.iterrows():
-                st.write(
-                    f"**{row['feature']}** — "
-                    f"value: `{row['feature_value']:.4f}` — "
-                    f"contribution: `{row['shap_value']:.4f}`"
+            try:
+
+                with st.spinner(
+                    "Processing smartwatch recordings..."
+                ):
+
+                    with tempfile.TemporaryDirectory() as temp_dir:
+
+                        temp_dir = Path(temp_dir)
+
+                        recording_paths = []
+
+                        for uploaded_file in uploaded_files:
+
+                            file_path = (
+                                temp_dir / uploaded_file.name
+                            )
+
+                            file_path.write_bytes(
+                                uploaded_file.getbuffer()
+                            )
+
+                            recording_paths.append(file_path)
+
+                        # ----------------------------------------
+                        # Build 112 patient-level features
+                        # ----------------------------------------
+
+                        new_patient = build_patient_features(
+                            recording_paths
+                        )
+
+                        # ----------------------------------------
+                        # Validate feature structure
+                        # ----------------------------------------
+
+                        if (
+                            new_patient.shape[1]
+                            != len(FEATURE_COLUMNS)
+                        ):
+                            raise ValueError(
+                                "The uploaded recordings produced "
+                                f"{new_patient.shape[1]} features, "
+                                f"but the model expects "
+                                f"{len(FEATURE_COLUMNS)}."
+                            )
+
+                        if (
+                            new_patient.columns.tolist()
+                            != FEATURE_COLUMNS
+                        ):
+                            raise ValueError(
+                                "The generated feature names or "
+                                "feature order do not match the "
+                                "trained model."
+                            )
+
+                        # ----------------------------------------
+                        # Prediction + SHAP
+                        # ----------------------------------------
+
+                        result = predict_patient(
+                            new_patient
+                        )
+
+                st.success("✓ Analysis complete")
+
+                # =================================================
+                # ASSESSMENT RESULT
+                # =================================================
+
+                st.markdown("### Assessment Result")
+
+                result_col, probability_col = st.columns(
+                    [1, 1]
                 )
 
-        st.markdown(
-            "#### 🔴 Factors pushing the prediction toward Parkinson's"
-        )
+                with result_col:
 
-        if len(toward_parkinson) == 0:
-            st.info(
-                "No strong Parkinson's-direction features were found."
-            )
-        else:
-            for _, row in toward_parkinson.iterrows():
-                st.write(
-                    f"**{row['feature']}** — "
-                    f"value: `{row['feature_value']:.4f}` — "
-                    f"contribution: `{row['shap_value']:.4f}`"
+                    if result["prediction"] == 1:
+
+                        st.markdown(
+                            """
+                            <div class="result-card">
+                                <div class="parkinson">
+                                🔴 Parkinson's Pattern Detected
+                                </div>
+                                <p>
+                                The model predicts the
+                                Parkinson's class.
+                                </p>
+                            </div>
+                            """,
+                            unsafe_allow_html=True,
+                        )
+
+                    else:
+
+                        st.markdown(
+                            """
+                            <div class="result-card">
+                                <div class="healthy">
+                                🟢 Healthy Pattern
+                                </div>
+                                <p>
+                                The model predicts the
+                                Healthy class.
+                                </p>
+                            </div>
+                            """,
+                            unsafe_allow_html=True,
+                        )
+
+                with probability_col:
+
+                    probability = (
+                        result["parkinson_probability"]
+                    )
+
+                    fig = go.Figure(
+                        go.Indicator(
+                            mode="gauge+number",
+                            value=probability * 100,
+                            number={
+                                "suffix": "%"
+                            },
+                            title={
+                                "text":
+                                "Parkinson's Probability"
+                            },
+                            gauge={
+                                "axis": {
+                                    "range": [0, 100]
+                                },
+                                "threshold": {
+                                    "line": {
+                                        "width": 4
+                                    },
+                                    "value": 50,
+                                },
+                            },
+                        )
+                    )
+
+                    fig.update_layout(
+                        height=280,
+                        margin=dict(
+                            l=20,
+                            r=20,
+                            t=50,
+                            b=20,
+                        ),
+                    )
+
+                    st.plotly_chart(
+                        fig,
+                        use_container_width=True,
+                    )
+
+                # =================================================
+                # PROBABILITIES
+                # =================================================
+
+                st.markdown(
+                    "### Prediction Probabilities"
                 )
-        st.markdown("#### 💡 Explanation")
 
-        if result["prediction"] == 1:
+                p1, p2 = st.columns(2)
 
-            st.info(
-                "The model predicted the Parkinson's class. "
-                "The features with positive SHAP values contributed "
-                "toward increasing the model's Parkinson's prediction, "
-                "while negative SHAP values contributed in the opposite direction."
-            )
+                with p1:
 
-        else:
+                    st.metric(
+                        "Healthy",
+                        (
+                            f"{result['healthy_probability'] * 100:.1f}%"
+                        ),
+                    )
 
-            st.success(
-                "The model predicted the Healthy class. "
-                "Several of the strongest feature contributions moved "
-                "the prediction away from the Parkinson's class."
-            )
+                with p2:
 
-        st.caption(
-            "SHAP values describe how features contributed to this "
-            "machine-learning prediction. They are not medical reasoning "
-            "and do not establish causation or diagnosis."
-        )
+                    st.metric(
+                        "Parkinson's",
+                        (
+                            f"{result['parkinson_probability'] * 100:.1f}%"
+                        ),
+                    )
+
+                # =================================================
+                # ASSESSMENT INFORMATION
+                # =================================================
+
+                st.markdown(
+                    "### Assessment Information"
+                )
+
+                st.write(
+                    {
+                        "Recordings analyzed": len(
+                            uploaded_files
+                        ),
+                        "Features generated": len(
+                            FEATURE_COLUMNS
+                        ),
+                        "Predicted class": (
+                            "Parkinson's"
+                            if result["prediction"] == 1
+                            else "Healthy"
+                        ),
+                    }
+                )
+
+                # =================================================
+                # SHAP EXPLANATION
+                # =================================================
+
+                st.markdown(
+                    "### 🧠 Why did the model make this prediction?"
+                )
+
+                explanation = result["explanation"]
+
+                top_explanation = (
+                    explanation.head(10)
+                )
+
+                toward_parkinson = (
+                    top_explanation[
+                        top_explanation["shap_value"] > 0
+                    ].copy()
+                )
+
+                toward_healthy = (
+                    top_explanation[
+                        top_explanation["shap_value"] < 0
+                    ].copy()
+                )
+
+                chart_data = (
+                    top_explanation.sort_values(
+                        "shap_value"
+                    )
+                )
+
+                fig = go.Figure()
+
+                fig.add_trace(
+                    go.Bar(
+                        x=chart_data["shap_value"],
+                        y=chart_data["feature"],
+                        orientation="h",
+                        text=(
+                            chart_data["shap_value"]
+                            .round(4)
+                        ),
+                        textposition="outside",
+                    )
+                )
+
+                fig.add_vline(
+                    x=0,
+                    line_width=2,
+                )
+
+                fig.update_layout(
+                    title=(
+                        "New Patient SHAP Explanation"
+                    ),
+                    xaxis_title=(
+                        "Contribution toward "
+                        "Parkinson's prediction"
+                    ),
+                    yaxis_title="Feature",
+                    height=500,
+                    margin=dict(
+                        l=20,
+                        r=40,
+                        t=60,
+                        b=40,
+                    ),
+                )
+
+                st.plotly_chart(
+                    fig,
+                    use_container_width=True,
+                )
+
+                # =================================================
+                # HEALTHY FACTORS
+                # =================================================
+
+                st.markdown(
+                    "#### 🟢 Factors pushing the prediction toward Healthy"
+                )
+
+                if len(toward_healthy) == 0:
+
+                    st.info(
+                        "No strong Healthy-direction "
+                        "features were found."
+                    )
+
+                else:
+
+                    for _, row in (
+                        toward_healthy.iterrows()
+                    ):
+
+                        st.write(
+                            f"**{row['feature']}** — "
+                            f"value: "
+                            f"`{row['feature_value']:.4f}` — "
+                            f"contribution: "
+                            f"`{row['shap_value']:.4f}`"
+                        )
+
+                # =================================================
+                # PARKINSON FACTORS
+                # =================================================
+
+                st.markdown(
+                    "#### 🔴 Factors pushing the prediction toward Parkinson's"
+                )
+
+                if len(toward_parkinson) == 0:
+
+                    st.info(
+                        "No strong Parkinson's-direction "
+                        "features were found."
+                    )
+
+                else:
+
+                    for _, row in (
+                        toward_parkinson.iterrows()
+                    ):
+
+                        st.write(
+                            f"**{row['feature']}** — "
+                            f"value: "
+                            f"`{row['feature_value']:.4f}` — "
+                            f"contribution: "
+                            f"`{row['shap_value']:.4f}`"
+                        )
+
+                # =================================================
+                # EXPLANATION
+                # =================================================
+
+                st.markdown("#### 💡 Explanation")
+
+                if result["prediction"] == 1:
+
+                    st.info(
+                        "The model predicted the "
+                        "Parkinson's class. Features with "
+                        "positive SHAP values contributed "
+                        "toward increasing the model's "
+                        "Parkinson's prediction, while "
+                        "negative SHAP values contributed "
+                        "in the opposite direction."
+                    )
+
+                else:
+
+                    st.success(
+                        "The model predicted the Healthy "
+                        "class. Features with negative SHAP "
+                        "values contributed toward moving "
+                        "the prediction away from the "
+                        "Parkinson's class."
+                    )
+
+                st.caption(
+                    "SHAP values describe how features "
+                    "contributed to this machine-learning "
+                    "prediction. They are not medical "
+                    "reasoning and do not establish "
+                    "causation or diagnosis."
+                )
+
+            except Exception as error:
+
+                st.error(
+                    "Unable to analyze the uploaded "
+                    "recordings."
+                )
+
+                st.exception(error)
+
 # ============================================================
 # MODEL PERFORMANCE
 # ============================================================
