@@ -5,7 +5,7 @@ import numpy as np
 import pandas as pd
 import streamlit as st
 import plotly.graph_objects as go
-
+import shap
 
 # ============================================================
 # PATHS
@@ -164,6 +164,11 @@ model = load_model()
 dataset = load_dataset()
 shap_importance = load_shap_importance()
 
+@st.cache_resource
+def load_shap_explainer():
+    return shap.TreeExplainer(model)
+
+explainer = load_shap_explainer()
 
 FEATURE_COLUMNS = [
     column
@@ -183,12 +188,41 @@ def predict_patient(patient_row):
     prediction = int(model.predict(features)[0])
     probabilities = model.predict_proba(features)[0]
 
+    # SHAP explanation for this patient
+    shap_values = explainer.shap_values(features)
+
+    # SHAP 0.52 + Random Forest gives:
+    # (samples, features, classes)
+    if isinstance(shap_values, np.ndarray) and shap_values.ndim == 3:
+        patient_shap = shap_values[0, :, 1]
+
+    elif isinstance(shap_values, list):
+        patient_shap = shap_values[1][0]
+
+    else:
+        patient_shap = np.asarray(shap_values)[0]
+
+    explanation = pd.DataFrame({
+        "feature": FEATURE_COLUMNS,
+        "feature_value": features.iloc[0].values,
+        "shap_value": patient_shap,
+    })
+
+    explanation["absolute_shap"] = (
+        explanation["shap_value"].abs()
+    )
+
+    explanation = explanation.sort_values(
+        "absolute_shap",
+        ascending=False
+    )
+
     return {
         "prediction": prediction,
         "healthy_probability": float(probabilities[0]),
         "parkinson_probability": float(probabilities[1]),
+        "explanation": explanation,
     }
-
 
 # ============================================================
 # SIDEBAR
@@ -506,8 +540,106 @@ elif page == "🔬 Patient Assessment":
                 ),
             }
         )
+        st.markdown("### 🧠 Why did the model make this prediction?")
+        explanation = result["explanation"]
+        top_explanation = explanation.head(10)
+        toward_parkinson = top_explanation[
+        top_explanation["shap_value"] > 0
+        ].copy()
 
+        toward_healthy = top_explanation[
+            top_explanation["shap_value"] < 0
+        ].copy()
+        chart_data = top_explanation.sort_values(
+            "shap_value"
+        )
 
+        fig = go.Figure()
+
+        fig.add_trace(
+            go.Bar(
+                x=chart_data["shap_value"],
+                y=chart_data["feature"],
+                orientation="h",
+                text=chart_data["shap_value"].round(4),
+                textposition="outside",
+            )
+        )
+
+        fig.add_vline(
+            x=0,
+            line_width=2,
+        )
+
+        fig.update_layout(
+            title="Patient-specific SHAP explanation",
+            xaxis_title="Contribution toward Parkinson's prediction",
+            yaxis_title="Feature",
+            height=500,
+            margin=dict(
+                l=20,
+                r=40,
+                t=60,
+                b=40,
+            ),
+        )
+
+        st.plotly_chart(
+            fig,
+            use_container_width=True,
+        )
+
+        st.markdown("#### 🟢 Factors pushing the prediction toward Healthy")
+
+        if len(toward_healthy) == 0:
+            st.info("No strong Healthy-direction features were found.")
+        else:
+            for _, row in toward_healthy.iterrows():
+                st.write(
+                    f"**{row['feature']}** — "
+                    f"value: `{row['feature_value']:.4f}` — "
+                    f"contribution: `{row['shap_value']:.4f}`"
+                )
+
+        st.markdown(
+            "#### 🔴 Factors pushing the prediction toward Parkinson's"
+        )
+
+        if len(toward_parkinson) == 0:
+            st.info(
+                "No strong Parkinson's-direction features were found."
+            )
+        else:
+            for _, row in toward_parkinson.iterrows():
+                st.write(
+                    f"**{row['feature']}** — "
+                    f"value: `{row['feature_value']:.4f}` — "
+                    f"contribution: `{row['shap_value']:.4f}`"
+                )
+        st.markdown("#### 💡 Explanation")
+
+        if result["prediction"] == 1:
+
+            st.info(
+                "The model predicted the Parkinson's class. "
+                "The features with positive SHAP values contributed "
+                "toward increasing the model's Parkinson's prediction, "
+                "while negative SHAP values contributed in the opposite direction."
+            )
+
+        else:
+
+            st.success(
+                "The model predicted the Healthy class. "
+                "Several of the strongest feature contributions moved "
+                "the prediction away from the Parkinson's class."
+            )
+
+        st.caption(
+            "SHAP values describe how features contributed to this "
+            "machine-learning prediction. They are not medical reasoning "
+            "and do not establish causation or diagnosis."
+        )
 # ============================================================
 # MODEL PERFORMANCE
 # ============================================================
