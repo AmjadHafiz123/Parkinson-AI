@@ -13,21 +13,8 @@ import pandas as pd
 import streamlit as st
 import plotly.graph_objects as go
 import shap
-
 from src.inference.feature_builder import build_patient_features
-# Add project root to Python import path
-PROJECT_ROOT = Path(__file__).resolve().parents[1]
 
-if str(PROJECT_ROOT) not in sys.path:
-    sys.path.insert(0, str(PROJECT_ROOT))
-
-import joblib
-import numpy as np
-import pandas as pd
-import streamlit as st
-import plotly.graph_objects as go
-import shap
-from src.inference.feature_builder import build_patient_features
 # ============================================================
 # PATHS
 # ============================================================
@@ -293,7 +280,22 @@ st.markdown(
 
 if page == "🏠 Dashboard":
 
-    st.subheader("System Overview")
+    st.subheader("Parkinson AI Dashboard")
+
+    st.write(
+        """
+        An explainable machine-learning system that analyses
+        smartwatch movement recordings and estimates whether
+        the observed movement pattern is more consistent with
+        the Healthy or Parkinson's class.
+        """
+    )
+
+    # ========================================================
+    # PROJECT OVERVIEW
+    # ========================================================
+
+    st.markdown("### 📌 Project Overview")
 
     col1, col2, col3, col4 = st.columns(4)
 
@@ -301,8 +303,12 @@ if page == "🏠 Dashboard":
         st.markdown(
             """
             <div class="metric-card">
-                <div class="metric-title">Patients</div>
-                <div class="metric-value">355</div>
+                <div class="metric-title">
+                    Original PADS Participants
+                </div>
+                <div class="metric-value">
+                    469
+                </div>
             </div>
             """,
             unsafe_allow_html=True,
@@ -312,8 +318,12 @@ if page == "🏠 Dashboard":
         st.markdown(
             """
             <div class="metric-card">
-                <div class="metric-title">Model Features</div>
-                <div class="metric-value">112</div>
+                <div class="metric-title">
+                    Project Patients
+                </div>
+                <div class="metric-value">
+                    355
+                </div>
             </div>
             """,
             unsafe_allow_html=True,
@@ -323,8 +333,12 @@ if page == "🏠 Dashboard":
         st.markdown(
             """
             <div class="metric-card">
-                <div class="metric-title">Random Forest Accuracy</div>
-                <div class="metric-value">87.3%</div>
+                <div class="metric-title">
+                    Model Features
+                </div>
+                <div class="metric-value">
+                    112
+                </div>
             </div>
             """,
             unsafe_allow_html=True,
@@ -334,8 +348,12 @@ if page == "🏠 Dashboard":
         st.markdown(
             """
             <div class="metric-card">
-                <div class="metric-title">CV ROC-AUC</div>
-                <div class="metric-value">77.0%</div>
+                <div class="metric-title">
+                    ML Model
+                </div>
+                <div class="metric-value">
+                    Random Forest
+                </div>
             </div>
             """,
             unsafe_allow_html=True,
@@ -343,70 +361,334 @@ if page == "🏠 Dashboard":
 
     st.markdown("")
 
-    left, right = st.columns([1.2, 1])
+    # ========================================================
+    # DATASET + SYSTEM
+    # ========================================================
+
+    left, right = st.columns([1.15, 1])
 
     with left:
 
-        st.subheader("What does this system do?")
+        st.markdown("### 🧠 What Does Parkinson AI Do?")
 
         st.write(
             """
-            Parkinson AI analyses movement information collected from
-            smartwatch sensors and uses machine learning to estimate
-            whether a patient's movement profile is more consistent
-            with the Healthy or Parkinson's class.
+            Parkinson AI processes smartwatch movement recordings
+            and converts the raw sensor signals into statistical
+            features.
             """
         )
 
         st.write(
             """
-            The system uses a patient-level Random Forest classifier
-            together with SHAP explainability to show which sensor
-            characteristics influenced the prediction.
+            These features are aggregated at patient level and
+            supplied to a Random Forest classifier. The model
+            produces Healthy and Parkinson's probabilities.
             """
+        )
+
+        st.write(
+            """
+            SHAP explainability is then used to show which
+            movement features contributed most strongly to the
+            individual prediction.
+            """
+        )
+
+        st.markdown("### 🔄 Prediction Pipeline")
+
+        st.code(
+            """
+Smartwatch recordings
+        ↓
+Sensor feature extraction
+        ↓
+Recording-level features
+        ↓
+Patient-level aggregation
+        ↓
+112 ML features
+        ↓
+Random Forest
+        ↓
+Healthy / Parkinson's probability
+        ↓
+SHAP explanation
+        ↓
+User-friendly result
+            """,
+            language="text",
         )
 
     with right:
 
-        st.subheader("Dataset")
+        st.markdown("### 📊 Project Dataset")
 
         class_counts = dataset["label"].value_counts().sort_index()
 
         fig = go.Figure(
             data=[
                 go.Pie(
-                    labels=["Healthy", "Parkinson's"],
+                    labels=[
+                        "Healthy",
+                        "Parkinson's",
+                    ],
                     values=[
                         int(class_counts.get(0, 0)),
                         int(class_counts.get(1, 0)),
                     ],
                     hole=0.55,
+                    textinfo="label+percent",
                 )
             ]
         )
 
         fig.update_layout(
-            margin=dict(l=10, r=10, t=10, b=10),
-            height=300,
+            height=330,
+            margin=dict(
+                l=10,
+                r=10,
+                t=20,
+                b=20,
+            ),
+            showlegend=True,
         )
 
-        st.plotly_chart(fig, use_container_width=True)
+        st.plotly_chart(
+            fig,
+            use_container_width=True,
+        )
+
+        st.caption(
+            "This chart represents the 355-patient processed "
+            "dataset used by this project."
+        )
+
+        st.link_button(
+            "🔗 View Original PADS Dataset",
+            "https://physionet.org/content/"
+            "parkinsons-disease-smartwatch/1.0.0/",
+        )
+
+    # ========================================================
+    # ORIGINAL DATASET INFORMATION
+    # ========================================================
+
+    st.markdown("### 📚 Original PADS Dataset")
+
+    st.write(
+        """
+        The project is based on the PADS (Parkinsons Disease
+        Smartwatch) dataset available through PhysioNet.
+        """
+    )
+
+    dataset_col1, dataset_col2, dataset_col3, dataset_col4 = (
+        st.columns(4)
+    )
+
+    with dataset_col1:
+        st.metric(
+            "Participants",
+            "469",
+        )
+
+    with dataset_col2:
+        st.metric(
+            "Measurement Steps",
+            "5,159",
+        )
+
+    with dataset_col3:
+        st.metric(
+            "Movement Tasks",
+            "11",
+        )
+
+    with dataset_col4:
+        st.metric(
+            "Smartwatches",
+            "2",
+        )
+
+    st.caption(
+        "The original PADS dataset contains movement assessments "
+        "recorded using two wrist-worn smartwatches. "
+    )
+
+    # ========================================================
+    # MODEL INFORMATION
+    # ========================================================
+
+    st.markdown("### 🤖 Machine Learning Model")
+
+    model_col1, model_col2, model_col3, model_col4 = st.columns(4)
+
+    with model_col1:
+        st.metric(
+            "Algorithm",
+            "Random Forest",
+        )
+
+    with model_col2:
+        st.metric(
+            "Input Features",
+            "112",
+        )
+
+    with model_col3:
+        st.metric(
+            "Prediction",
+            "2 Classes",
+        )
+
+    with model_col4:
+        st.metric(
+            "Explainability",
+            "SHAP",
+        )
+
+    st.write(
+        """
+        The current model operates on patient-level features
+        generated from smartwatch movement recordings.
+        """
+    )
+
+    # ========================================================
+    # NEW PATIENT WORKFLOW
+    # ========================================================
+
+    st.markdown("### 👤 New Patient Assessment")
+
+    st.write(
+        """
+        A new user does not need to select an existing patient
+        ID. The user can upload smartwatch movement recordings
+        belonging to the person being assessed.
+        """
+    )
+
+    step1, step2, step3, step4 = st.columns(4)
+
+    with step1:
+        st.markdown("### 1️⃣")
+        st.markdown("**Upload**")
+        st.caption(
+            "Upload one or more smartwatch movement recordings."
+        )
+
+    with step2:
+        st.markdown("### 2️⃣")
+        st.markdown("**Extract**")
+        st.caption(
+            "Generate statistical features from the sensor signals."
+        )
+
+    with step3:
+        st.markdown("### 3️⃣")
+        st.markdown("**Predict**")
+        st.caption(
+            "The Random Forest estimates Healthy and Parkinson's probabilities."
+        )
+
+    with step4:
+        st.markdown("### 4️⃣")
+        st.markdown("**Explain**")
+        st.caption(
+            "SHAP identifies the features that influenced the prediction."
+        )
+
+    # ========================================================
+    # MODEL PERFORMANCE
+    # ========================================================
+
+    st.markdown("### 📈 Model Performance")
+
+    perf1, perf2, perf3, perf4 = st.columns(4)
+
+    with perf1:
+        st.metric(
+            "Accuracy",
+            "87.32%",
+        )
+
+    with perf2:
+        st.metric(
+            "Balanced Accuracy",
+            "78.52%",
+        )
+
+    with perf3:
+        st.metric(
+            "F1 Score",
+            "92.04%",
+        )
+
+    with perf4:
+        st.metric(
+            "ROC-AUC",
+            "86.25%",
+        )
+
+    st.caption(
+        "These values represent the evaluation results currently "
+        "reported by this project. See Model Performance for details."
+    )
+
+    # ========================================================
+    # EXPLAINABLE AI
+    # ========================================================
+
+    st.markdown("### 🧠 Explainable AI")
+
+    explain_col1, explain_col2 = st.columns(2)
+
+    with explain_col1:
+
+        st.info(
+            """
+            **Why this prediction?**
+
+            SHAP identifies the individual features that pushed
+            the model toward or away from the Parkinson's class.
+            """
+        )
+
+    with explain_col2:
+
+        st.warning(
+            """
+            **Important**
+
+            SHAP explains the machine-learning model's behaviour.
+            It does not represent medical reasoning or prove that
+            a feature causes Parkinson's disease.
+            """
+        )
+
+    # ========================================================
+    # DISCLAIMER
+    # ========================================================
 
     st.markdown(
         """
         <div class="warning">
 
-        ⚠️ <b>Important:</b>
-        This application is an academic/research prototype.
-        It must not be used as a substitute for professional medical
-        diagnosis or clinical assessment.
+        ⚠️ <b>Research Prototype:</b>
+
+        Parkinson AI is an MSc academic/research prototype.
+        The prediction is generated from a machine-learning model
+        trained on smartwatch movement data.
+
+        This application is not a medical device and must not be
+        used as a substitute for professional medical diagnosis,
+        clinical assessment or treatment.
 
         </div>
         """,
         unsafe_allow_html=True,
     )
-
-
 # ============================================================
 # PATIENT ASSESSMENT
 # ============================================================
@@ -996,7 +1278,6 @@ elif page == "🔎 Feature Analysis":
         """
     )
 
-
 # ============================================================
 # ABOUT
 # ============================================================
@@ -1007,49 +1288,312 @@ elif page == "ℹ️ About":
 
     st.write(
         """
-        Parkinson AI is an MSc research prototype for analysing
-        smartwatch movement sensor data using machine learning.
+        Parkinson AI is an MSc research prototype that uses
+        smartwatch movement sensor data and machine learning
+        to estimate whether a movement pattern is more
+        consistent with the Healthy or Parkinson's class.
         """
     )
 
-    st.markdown("### Pipeline")
+    # ---------------------------------------------------------
+    # PROJECT WORKFLOW
+    # ---------------------------------------------------------
+
+    st.markdown("### 🔄 How the System Works")
+
+    st.info(
+        """
+        The application follows a complete machine-learning
+        pipeline from smartwatch recordings to an explainable
+        prediction.
+        """
+    )
+
+    st.markdown(
+        """
+        <div style="
+            padding: 1.5rem;
+            border-radius: 16px;
+            background: white;
+            border: 1px solid #e5e7eb;
+            margin-bottom: 1rem;
+        ">
+
+        <h4>1️⃣ Smartwatch Movement Data</h4>
+        <p>
+        The system starts with movement recordings collected
+        from smartwatch sensors. Each recording contains
+        multiple sensor signals measured over time.
+        </p>
+
+        <hr>
+
+        <h4>2️⃣ Sensor Feature Extraction</h4>
+        <p>
+        Each recording is converted into numerical features
+        such as mean, standard deviation, minimum, maximum,
+        median, range, RMS, energy and interquartile range.
+        </p>
+
+        <hr>
+
+        <h4>3️⃣ Patient-Level Aggregation</h4>
+        <p>
+        Multiple recordings belonging to the same patient are
+        aggregated to create a single patient-level representation.
+        The current model uses <b>112 features</b>.
+        </p>
+
+        <hr>
+
+        <h4>4️⃣ Random Forest Prediction</h4>
+        <p>
+        The trained Random Forest model receives the 112
+        patient-level features and estimates the probability
+        of the Healthy and Parkinson's classes.
+        </p>
+
+        <hr>
+
+        <h4>5️⃣ SHAP Explainability</h4>
+        <p>
+        SHAP is used to identify which features contributed
+        most strongly to the individual prediction.
+        This provides an explanation of the model's decision.
+        </p>
+
+        <hr>
+
+        <h4>6️⃣ User-Friendly Result</h4>
+        <p>
+        The application displays the predicted class,
+        probability scores and the main features that pushed
+        the prediction toward Healthy or Parkinson's.
+        </p>
+
+        </div>
+        """,
+        unsafe_allow_html=True,
+    )
+
+    # ---------------------------------------------------------
+    # NEW PATIENT FLOW
+    # ---------------------------------------------------------
+
+    st.markdown("### 👤 New Patient Assessment")
+
+    st.write(
+        """
+        A new user does not need to select an existing patient ID.
+        Instead, the user uploads smartwatch movement recordings
+        belonging to the person being assessed.
+        """
+    )
+
+    new_patient_steps = [
+        ("📁", "Upload Recordings",
+         "Upload one or more smartwatch movement recordings for the person."),
+        ("⚙️", "Build Features",
+         "The application extracts statistical features from the recordings."),
+        ("📐", "Create Patient Representation",
+         "The recordings are aggregated into the 112 features required by the model."),
+        ("🤖", "Run Random Forest",
+         "The trained model calculates Healthy and Parkinson's probabilities."),
+        ("🧠", "Generate SHAP Explanation",
+         "SHAP identifies the features that contributed most to the prediction."),
+        ("📊", "Display Result",
+         "The UI shows the prediction, probabilities and explanation."),
+    ]
+
+    for icon, title, description in new_patient_steps:
+
+        st.markdown(
+            f"""
+            <div style="
+                display: flex;
+                gap: 15px;
+                align-items: flex-start;
+                padding: 12px;
+                margin: 7px 0;
+                border-radius: 12px;
+                background: #ffffff;
+                border: 1px solid #e5e7eb;
+            ">
+                <div style="font-size: 1.5rem;">{icon}</div>
+                <div>
+                    <b>{title}</b>
+                    <div style="color: #64748b; margin-top: 3px;">
+                        {description}
+                    </div>
+                </div>
+            </div>
+            """,
+            unsafe_allow_html=True,
+        )
+
+    # ---------------------------------------------------------
+    # MODEL
+    # ---------------------------------------------------------
+
+    st.markdown("### 🤖 Machine Learning Model")
+
+    model_col1, model_col2, model_col3 = st.columns(3)
+
+    with model_col1:
+        st.metric("Model", "Random Forest")
+
+    with model_col2:
+        st.metric("Input Features", "112")
+
+    with model_col3:
+        st.metric("Explainability", "SHAP")
+
+    st.write(
+        """
+        The model was trained using patient-level smartwatch
+        movement features. The prediction is based on the
+        learned statistical patterns in the training data.
+        """
+
+    )
+
+   # ---------------------------------------------------------
+   # DATASET
+   # ---------------------------------------------------------
+
+    st.markdown("### 📊 Dataset")
+
+    dataset_col1, dataset_col2, dataset_col3 = st.columns(3)
+
+    with dataset_col1:
+        st.metric("Patients", "355")
+
+    with dataset_col2:
+        st.metric("Healthy", "79")
+
+    with dataset_col3:
+        st.metric("Parkinson's", "276")
+
+    st.write(
+        """
+        This project uses the PADS (Parkinsons Disease Smartwatch)
+        dataset provided through PhysioNet. The original dataset
+        contains smartwatch movement recordings collected from
+        participants performing neurologically designed movement
+        tasks using wrist-worn smartwatches.
+        """
+    )
+
+    st.markdown(
+        """
+        **Dataset source:**
+        """
+    )
+
+    st.link_button(
+        "🔗 Open PADS Dataset on PhysioNet",
+        "https://physionet.org/content/parkinsons-disease-smartwatch/1.0.0/",
+        use_container_width=False,
+    )
+
+    st.caption(
+        "Varghese et al. (2024), PADS - Parkinsons Disease Smartwatch "
+        "dataset, version 1.0.0, PhysioNet."
+    )
+
+    st.caption(
+        "DOI: 10.13026/m0w9-zx22"
+    )
+
+    # ---------------------------------------------------------
+    # EXPLAINABILITY
+    # ---------------------------------------------------------
+
+    st.markdown("### 🧠 What Does the Explanation Mean?")
+
+    st.write(
+        """
+        SHAP values show how individual features influenced
+        the model's prediction.
+        """
+    )
+
+    st.markdown(
+        """
+        **Positive SHAP value**
+
+        → pushes the model toward the Parkinson's class.
+
+        **Negative SHAP value**
+
+        → pushes the model away from the Parkinson's class
+        and toward Healthy.
+
+        **Larger absolute SHAP value**
+
+        → stronger contribution to the model's prediction.
+        """
+    )
+
+    st.warning(
+        """
+        SHAP explains the behaviour of the machine-learning
+        model. It does not mean that a particular sensor
+        feature medically causes Parkinson's disease.
+        """
+    )
+
+    # ---------------------------------------------------------
+    # PROJECT ARCHITECTURE
+    # ---------------------------------------------------------
+
+    st.markdown("### 🏗️ Project Architecture")
 
     st.code(
         """
-Raw smartwatch recordings
-        ↓
-Sensor feature extraction
-        ↓
-Patient-level aggregation
-        ↓
-112 ML features
-        ↓
-Random Forest classifier
-        ↓
-Parkinson's probability
-        ↓
-SHAP explainability
-        ↓
-User-friendly result
+Smartwatch Movement Recordings
+              │
+              ▼
+     Feature Extraction
+              │
+              ▼
+    Recording-Level Features
+              │
+              ▼
+    Patient-Level Aggregation
+              │
+              ▼
+       112 ML Features
+              │
+              ▼
+     Random Forest Model
+              │
+        ┌─────┴─────┐
+        ▼           ▼
+   Prediction      SHAP
+        │           │
+        └─────┬─────┘
+              ▼
+      Streamlit User Interface
+              │
+              ▼
+   Prediction + Probability
+        + Explanation
         """,
         language="text",
     )
 
-    st.markdown("### Dataset")
+    # ---------------------------------------------------------
+    # IMPORTANT
+    # ---------------------------------------------------------
 
-    st.write(
-        """
-        The current processed dataset contains 355 patients,
-        including 79 Healthy and 276 Parkinson's patients.
-        """
-    )
-
-    st.markdown("### Disclaimer")
+    st.markdown("### ⚠️ Important")
 
     st.warning(
         """
-        This software is intended for academic and research
-        purposes only. It is not a medical device and should
-        not be used to diagnose Parkinson's disease.
+        Parkinson AI is an academic/research prototype.
+        It is not a medical device and must not be used as
+        a substitute for professional medical diagnosis,
+        clinical assessment or treatment.
         """
     )
