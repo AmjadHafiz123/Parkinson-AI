@@ -1,33 +1,50 @@
-Yes. Below is the **complete `README.md` content**, ready to copy directly into your project's `README.md`.
+Absolutely. Below is a **finalized, paste-ready `README.md`** based on your actual project, including your **GitHub repository**, **live Streamlit application**, Streamlit Community Cloud deployment, Docker, FastAPI, ML/SHAP pipeline, and all 11 required sections.
+
+I have **not included placeholders**.
 
 ````markdown
 # 🧠 Parkinson AI
 
 ## Explainable Parkinson's Disease Screening Using Smartwatch Movement Data
 
-Parkinson AI is an MSc research prototype that uses smartwatch movement sensor data, machine learning, and Explainable AI (XAI) to estimate whether a movement profile is more consistent with a Healthy or Parkinson's class.
+Parkinson AI is an MSc research project that demonstrates an end-to-end Artificial Intelligence and Explainable AI solution using smartwatch movement data.
 
-The system provides an end-to-end pipeline:
+The application processes smartwatch movement recordings, extracts statistical movement features, aggregates them at patient level, and uses a trained Random Forest machine-learning model to estimate whether a movement profile is more consistent with a **Healthy** or **Parkinson's** class.
 
-```text
-Smartwatch Movement Recordings
-            ↓
-      Feature Extraction
-            ↓
-   Patient-Level Aggregation
-            ↓
-      112 ML Features
-            ↓
-    Random Forest Model
-            ↓
- Healthy / Parkinson's Probability
-            ↓
-       SHAP Explainability
-            ↓
-       Streamlit Web UI
-````
+The system also uses **SHAP (SHapley Additive exPlanations)** to provide an explanation of the model's predictions.
 
-> **⚠️ Important:** This project is an academic/research prototype. It is not a medical device and must not be used as a substitute for professional medical diagnosis or clinical assessment.
+The web application is implemented using **Streamlit** and is deployed through **Streamlit Community Cloud**.
+
+---
+
+## 🚀 Live Application
+
+### Streamlit Web Application
+
+**Live URL:**
+
+https://parkinson-ai-app.streamlit.app/
+
+The deployed application allows users to interact with the Parkinson AI system through a web browser.
+
+Users can upload smartwatch movement recordings and receive:
+
+- Predicted class
+- Healthy probability
+- Parkinson's probability
+- SHAP-based explanation
+- Important contributing features
+- Interactive visualisations
+
+---
+
+## 💻 GitHub Repository
+
+**Repository:**
+
+https://github.com/AmjadHafiz123/Parkinson-AI
+
+The GitHub repository contains the application source code, machine-learning implementation, inference components, deployment configuration, and required model/data artefacts used by the deployed application.
 
 ---
 
@@ -35,97 +52,122 @@ Smartwatch Movement Recordings
 
 Parkinson's disease is a neurological disorder that can affect movement, coordination, tremor, and motor control.
 
-Movement information collected from wearable devices such as smartwatches can contain characteristics that may be useful for machine-learning research.
+Movement characteristics collected using wearable devices such as smartwatches can provide useful information for research into movement-related conditions. However, raw smartwatch sensor recordings are complex time-series data and are difficult to interpret directly.
 
-However, raw smartwatch sensor recordings are difficult to interpret directly.
+The problem addressed by this project is therefore:
 
-This project addresses this problem by developing an AI-based system that can:
+> **How can smartwatch movement recordings be transformed into meaningful machine-learning features and used to develop an explainable AI system for Parkinson's disease movement-pattern classification?**
 
-* Process smartwatch movement recordings.
-* Extract statistical features from sensor signals.
-* Aggregate multiple recordings at patient level.
-* Use machine learning to classify movement patterns.
-* Estimate Healthy and Parkinson's probabilities.
-* Explain individual predictions using SHAP.
-* Present the results through a user-friendly web interface.
+The project aims to demonstrate how wearable sensor data can be processed using machine learning to produce a classification result while also providing an explanation of the features that influenced the prediction.
 
-The objective is not to replace a clinician, but to demonstrate an end-to-end machine-learning and explainable-AI workflow using wearable sensor data.
+The system is designed as an academic and research prototype rather than a clinical diagnostic system.
 
 ---
 
 # 2. Use Case
 
-Parkinson AI is designed as an academic and research prototype for studying the use of wearable movement data and machine learning.
+Parkinson AI can be used as an academic demonstration and research prototype for analysing smartwatch movement recordings.
 
-## Example Use Case
-
-A researcher or authorised user can upload smartwatch movement recordings belonging to a new participant.
-
-The application processes the uploaded recordings and generates:
-
-1. Movement features.
-2. Patient-level features.
-3. Machine-learning prediction.
-4. Healthy probability.
-5. Parkinson's probability.
-6. SHAP-based feature contributions.
-7. Visual explanation of the prediction.
-
-Example:
+A typical use case is:
 
 ```text
-User uploads smartwatch recordings
-              ↓
-Application processes recordings
-              ↓
-112 patient-level features generated
-              ↓
+Researcher / User
+       ↓
+Uploads smartwatch movement recordings
+       ↓
+Streamlit application
+       ↓
+Feature extraction
+       ↓
+Patient-level aggregation
+       ↓
 Random Forest prediction
-              ↓
-Healthy: 92.8%
-Parkinson's: 7.2%
-              ↓
+       ↓
+Healthy / Parkinson's probability
+       ↓
 SHAP explanation
-              ↓
-Top contributing movement features
+       ↓
+Interactive results
+````
+
+## Example
+
+A researcher has movement recordings collected from a participant using a smartwatch.
+
+The researcher uploads the relevant `.txt` recordings through the Streamlit application.
+
+The application then:
+
+1. Reads the uploaded recordings.
+2. Extracts movement features.
+3. Aggregates the recordings into a patient-level feature vector.
+4. Generates the required machine-learning features.
+5. Loads the trained Random Forest model.
+6. Generates prediction probabilities.
+7. Calculates SHAP values.
+8. Displays the prediction and explanation.
+
+Example output:
+
+```text
+Prediction:
+Healthy
+
+Healthy Probability:
+92.8%
+
+Parkinson's Probability:
+7.2%
 ```
 
-The application is intended for:
+The system can be used for:
 
-* MSc academic work.
-* Machine-learning research.
-* Explainable AI demonstrations.
-* Wearable-sensor research.
-* Cloud and container deployment demonstrations.
+* MSc academic projects.
+* Machine-learning demonstrations.
+* Explainable AI research.
+* Wearable sensor research.
+* Data science experimentation.
+* Cloud application demonstrations.
 
-It is not intended for:
-
-* Medical diagnosis.
-* Clinical decision-making.
-* Treatment recommendations.
-* Emergency medical assessment.
+The application is **not intended for medical diagnosis or clinical decision-making**.
 
 ---
 
 # 3. Solution Overview
 
-The solution consists of multiple stages.
+The proposed solution combines wearable sensor processing, machine learning, Explainable AI, and a cloud-hosted web application.
 
-## 3.1 Raw Sensor Data
+The overall pipeline is:
 
-The project uses smartwatch movement recordings from the Parkinson's Disease Smartwatch Dataset available through PhysioNet.
+```text
+Smartwatch Movement Recordings
+             ↓
+       Data Processing
+             ↓
+      Feature Extraction
+             ↓
+   Recording-Level Features
+             ↓
+    Patient-Level Aggregation
+             ↓
+       112 ML Features
+             ↓
+     Random Forest Model
+             ↓
+       Classification
+             ↓
+ Healthy / Parkinson's Probability
+             ↓
+      SHAP Explanation
+             ↓
+       Streamlit Web UI
+```
 
-The raw recordings contain time-series sensor measurements.
+## Feature Extraction
 
-The project processes six sensor signal channels.
+The system extracts statistical characteristics from the smartwatch sensor signals.
 
----
-
-## 3.2 Feature Extraction
-
-Statistical features are extracted from each sensor channel.
-
-The current feature extraction process calculates:
+Features include:
 
 * Mean
 * Standard deviation
@@ -137,151 +179,56 @@ The current feature extraction process calculates:
 * Energy
 * Interquartile Range (IQR)
 
-For example:
+These features transform raw time-series sensor measurements into structured numerical data suitable for machine learning.
 
-```text
-signal_1_mean
-signal_1_std
-signal_1_min
-signal_1_max
-signal_1_median
-signal_1_range
-signal_1_rms
-signal_1_energy
-signal_1_iqr
-```
+## Patient-Level Aggregation
 
-The same type of features is calculated for the six sensor channels.
+A participant may have multiple movement recordings.
 
----
+Instead of treating every recording as an independent patient, recording-level features are aggregated at patient level.
 
-## 3.3 Recording-Level Dataset
-
-The feature extraction process produces a recording-level dataset:
-
-```text
-data/processed/parkinson_features.csv
-```
-
-The dataset contains information such as:
-
-```text
-patient_id
-task
-wrist
-label
-duration
-num_samples
-signal_1_*
-signal_2_*
-signal_3_*
-signal_4_*
-signal_5_*
-signal_6_*
-```
-
----
-
-## 3.4 Patient-Level Aggregation
-
-A patient may have multiple recordings from different tasks and wrist/device conditions.
-
-Therefore, the project aggregates recording-level features by patient.
-
-For numerical features, the system calculates:
+The system calculates statistical summaries such as:
 
 ```text
 Mean across recordings
-+
 Standard deviation across recordings
 ```
 
-The resulting patient-level dataset is:
+The resulting patient-level representation contains:
 
 ```text
-data/processed/parkinson_patient_features.csv
+112 machine-learning features
 ```
 
-The trained Random Forest model expects:
+## Prediction
+
+A trained Random Forest classifier is used to classify the movement profile.
+
+The model provides:
 
 ```text
-112 patient-level features
-```
-
----
-
-## 3.5 Machine Learning
-
-A Random Forest classifier is used as the primary prediction model.
-
-The model is stored as:
-
-```text
-data/processed/shap/random_forest_model.joblib
-```
-
-The model produces two class probabilities:
-
-```text
+Predicted class
 Healthy probability
 Parkinson's probability
 ```
 
-The predicted class is determined from the model output.
+## Explainability
 
----
+SHAP is used to explain individual predictions.
 
-## 3.6 Explainable AI
-
-SHAP is used to explain the model's individual predictions.
-
-The application uses:
-
-```python
-shap.TreeExplainer(model)
-```
-
-The explanation identifies which of the 112 features contributed most strongly to the prediction.
+The system identifies features that contributed toward or away from the predicted class.
 
 For example:
 
 ```text
-signal_5_std
-signal_5_energy_std
-signal_5_rms_std
-signal_5_rms_mean
-signal_6_range_std
-```
-
-may appear among the strongest contributors for an individual prediction.
-
-### SHAP Interpretation
-
-For the Parkinson's-class explanation:
-
-```text
-Positive SHAP value
+Feature
         ↓
-Contribution toward Parkinson's class
-```
-
-and:
-
-```text
-Negative SHAP value
+SHAP value
         ↓
-Contribution away from Parkinson's class
+Contribution to model prediction
 ```
 
-Therefore, the UI can show:
-
-```text
-🟢 Factors pushing toward Healthy
-
-🔴 Factors pushing toward Parkinson's
-```
-
-> SHAP values explain the behaviour of the machine-learning model. They do not represent medical reasoning, biological causation, or a clinical diagnosis.
+This makes the machine-learning prediction more interpretable than displaying a classification result alone.
 
 ---
 
@@ -293,7 +240,7 @@ The project uses the:
 
 **Parkinson's Disease Smartwatch Dataset**
 
-provided through PhysioNet.
+The dataset is provided through **PhysioNet**.
 
 Official dataset:
 
@@ -305,77 +252,83 @@ Dataset version:
 1.0.0
 ```
 
-Source:
+Provider:
 
 ```text
 PhysioNet
 ```
 
----
-
 ## Dataset Description
 
-The dataset contains smartwatch movement recordings collected for research involving Parkinson's disease.
+The dataset contains smartwatch movement recordings collected for research related to Parkinson's disease.
 
-The project processes movement time-series recordings and extracts statistical characteristics from six sensor channels.
+The raw data consists of movement sensor time-series recordings.
 
-The raw recordings are transformed into machine-learning features.
+The project processes six sensor signal channels and extracts statistical features from those signals.
 
-The overall transformation is:
+The transformation is:
 
 ```text
-Raw smartwatch time-series
+Raw smartwatch recordings
             ↓
-Six sensor channels
+Sensor signals
             ↓
 Statistical feature extraction
             ↓
-Recording-level features
+Recording-level dataset
             ↓
 Patient-level aggregation
             ↓
-112 ML features
+Machine-learning feature vector
 ```
 
----
+## Processed Data
 
-## Processed Dataset
-
-The current processed patient-level dataset contains approximately:
+The project generates processed datasets including:
 
 ```text
-355 patients
-112 model features
+data/processed/parkinson_features.csv
 ```
 
-Current class distribution:
+and:
 
 ```text
-Healthy       : 79
-Parkinson's   : 276
+data/processed/parkinson_patient_features.csv
 ```
 
-The processed dataset is generated by the project's feature extraction and patient aggregation scripts.
+The patient-level dataset is used as the basis for the machine-learning workflow.
+
+The trained Random Forest model is stored in:
+
+```text
+data/processed/shap/random_forest_model.joblib
+```
+
+SHAP feature importance information is stored in:
+
+```text
+data/processed/shap/shap_feature_importance.csv
+```
 
 ---
 
 # 5. AI/ML Approach
 
-## 5.1 Model
+## 5.1 Machine-Learning Model
 
-The primary classification model is:
+The primary classification model used by the application is:
 
 ```text
 Random Forest Classifier
 ```
 
-Random Forest was selected because it is suitable for structured/tabular data and can model nonlinear relationships between features.
+Random Forest was selected because it is suitable for structured/tabular numerical data and can model nonlinear relationships between features.
 
-It also works well with tree-based SHAP explanations.
+It also integrates well with tree-based SHAP explanations.
 
 ---
 
-## 5.2 Input
+## 5.2 Model Input
 
 The trained model expects:
 
@@ -383,11 +336,11 @@ The trained model expects:
 112 patient-level features
 ```
 
-These features are generated from smartwatch movement recordings.
+These features are generated from smartwatch movement recordings through the feature extraction and aggregation pipeline.
 
 ---
 
-## 5.3 Output
+## 5.3 Model Output
 
 The model produces:
 
@@ -397,14 +350,7 @@ Healthy probability
 Parkinson's probability
 ```
 
-Example:
-
-```text
-Prediction: Healthy
-
-Healthy probability: 92.8%
-Parkinson's probability: 7.2%
-```
+The probabilities are generated using the Random Forest classifier's probability prediction functionality.
 
 ---
 
@@ -416,33 +362,55 @@ The project uses:
 SHAP
 ```
 
+with:
+
+```python
+shap.TreeExplainer(model)
+```
+
+SHAP provides an explanation of how individual features influence the model prediction.
+
+The application displays:
+
+* Feature name
+* Feature value
+* SHAP contribution
+* Features pushing toward Healthy
+* Features pushing toward Parkinson's
+* SHAP visualisation
+
+### SHAP Interpretation
+
+Conceptually:
+
+```text
+Positive contribution
+        ↓
+Pushes prediction toward the analysed class
+```
+
 and:
 
 ```text
-shap.TreeExplainer
+Negative contribution
+        ↓
+Pushes prediction away from the analysed class
 ```
 
-to explain individual predictions.
+SHAP values describe the behaviour of the trained machine-learning model.
 
-The UI displays:
-
-* Top contributing features.
-* Feature values.
-* SHAP values.
-* Features contributing toward Healthy.
-* Features contributing toward Parkinson's.
-* SHAP contribution chart.
+They do not represent medical reasoning, biological causation, or clinical biomarkers.
 
 ---
 
-## 5.5 Machine Learning Pipeline
+## 5.5 Machine-Learning Workflow
 
 ```text
-Raw Recordings
+Raw Sensor Data
        ↓
 Feature Extraction
        ↓
-Recording-Level Dataset
+Recording-Level Features
        ↓
 Patient-Level Aggregation
        ↓
@@ -450,7 +418,7 @@ Patient-Level Aggregation
        ↓
 Random Forest
        ↓
-Prediction
+Prediction Probabilities
        ↓
 SHAP Explanation
 ```
@@ -459,125 +427,433 @@ SHAP Explanation
 
 # 6. Application Architecture
 
-The high-level application architecture is:
+The high-level architecture of Parkinson AI is:
 
 ```text
-                         ┌─────────────────────┐
-                         │       User          │
-                         │    / Researcher     │
-                         └──────────┬──────────┘
-                                    │
-                                    │ Upload .txt
-                                    ▼
-                         ┌─────────────────────┐
-                         │   Streamlit Web UI  │
-                         │      app/app.py     │
-                         └──────────┬──────────┘
-                                    │
-                                    ▼
-                         ┌─────────────────────┐
-                         │   Feature Builder   │
-                         │ build_patient_      │
-                         │ features()          │
-                         └──────────┬──────────┘
-                                    │
-                                    ▼
-                         ┌─────────────────────┐
-                         │ Feature Extraction  │
-                         │                     │
-                         │ Mean                │
-                         │ Std                 │
-                         │ Min / Max           │
-                         │ Median              │
-                         │ Range               │
-                         │ RMS                 │
-                         │ Energy              │
-                         │ IQR                 │
-                         └──────────┬──────────┘
-                                    │
-                                    ▼
-                         ┌─────────────────────┐
-                         │ Patient-Level       │
-                         │ Feature Vector      │
-                         │                     │
-                         │ 112 Features        │
-                         └──────────┬──────────┘
-                                    │
-                                    ▼
-                         ┌─────────────────────┐
-                         │ Random Forest       │
-                         │ Classifier          │
-                         └──────────┬──────────┘
-                                    │
-                       ┌────────────┴────────────┐
-                       │                         │
-                       ▼                         ▼
-              ┌─────────────────┐       ┌─────────────────┐
-              │ Prediction      │       │ SHAP            │
-              │ Probability     │       │ TreeExplainer   │
-              └────────┬────────┘       └────────┬────────┘
-                       │                         │
-                       └────────────┬────────────┘
-                                    ▼
-                         ┌─────────────────────┐
-                         │   Result Dashboard  │
-                         │                     │
-                         │ Prediction          │
-                         │ Probabilities       │
-                         │ SHAP Chart          │
-                         │ Important Features  │
-                         └─────────────────────┘
+                       ┌──────────────────────┐
+                       │        User          │
+                       │     / Researcher     │
+                       └──────────┬───────────┘
+                                  │
+                                  │ Upload .txt files
+                                  ▼
+                       ┌──────────────────────┐
+                       │   Streamlit Web UI   │
+                       │      app/app.py      │
+                       └──────────┬───────────┘
+                                  │
+                                  ▼
+                       ┌──────────────────────┐
+                       │   Feature Builder    │
+                       │  feature_builder.py  │
+                       └──────────┬───────────┘
+                                  │
+                                  ▼
+                       ┌──────────────────────┐
+                       │ Feature Extraction   │
+                       │                      │
+                       │ Mean                 │
+                       │ Standard Deviation   │
+                       │ Min / Max            │
+                       │ Median               │
+                       │ Range                │
+                       │ RMS                  │
+                       │ Energy               │
+                       │ IQR                  │
+                       └──────────┬───────────┘
+                                  │
+                                  ▼
+                       ┌──────────────────────┐
+                       │ Patient-Level        │
+                       │ Feature Vector       │
+                       │                      │
+                       │ 112 Features         │
+                       └──────────┬───────────┘
+                                  │
+                                  ▼
+                       ┌──────────────────────┐
+                       │   Random Forest      │
+                       │     Classifier       │
+                       └──────────┬───────────┘
+                                  │
+                    ┌─────────────┴─────────────┐
+                    │                           │
+                    ▼                           ▼
+          ┌──────────────────┐        ┌──────────────────┐
+          │   Prediction     │        │       SHAP       │
+          │  Probabilities   │        │ TreeExplainer    │
+          └────────┬─────────┘        └────────┬─────────┘
+                   │                           │
+                   └─────────────┬─────────────┘
+                                 ▼
+                       ┌──────────────────────┐
+                       │   Streamlit Results  │
+                       │                      │
+                       │ Prediction           │
+                       │ Probabilities        │
+                       │ SHAP Chart           │
+                       │ Important Features   │
+                       └──────────────────────┘
 ```
+
+## Main Components
+
+### Streamlit Application
+
+```text
+app/app.py
+```
+
+Provides the interactive web interface.
+
+### Feature Builder
+
+```text
+src/inference/feature_builder.py
+```
+
+Builds the patient-level feature representation from uploaded movement recordings.
+
+### Predictor
+
+```text
+src/inference/predictor.py
+```
+
+Handles model loading and prediction functionality.
+
+### Machine-Learning Model
+
+```text
+data/processed/shap/random_forest_model.joblib
+```
+
+Contains the trained Random Forest model.
+
+### FastAPI
+
+```text
+src/api/main.py
+```
+
+Provides API functionality for programmatic access to the prediction system.
 
 ---
 
 # 7. Technology Stack
 
-## Programming Language
+| Technology                | Purpose                   |
+| ------------------------- | ------------------------- |
+| Python                    | Main programming language |
+| Pandas                    | Data processing           |
+| NumPy                     | Numerical processing      |
+| Scikit-learn              | Machine learning          |
+| Random Forest             | Classification            |
+| SHAP                      | Explainable AI            |
+| Plotly                    | Data visualisation        |
+| Streamlit                 | Web application           |
+| FastAPI                   | API layer                 |
+| Joblib                    | Model serialisation       |
+| Docker                    | Containerisation          |
+| Git                       | Version control           |
+| GitHub                    | Source-code repository    |
+| Streamlit Community Cloud | Cloud deployment          |
+
+## Python Libraries
+
+The main Python libraries used by the project include:
 
 ```text
-Python 3.13
+pandas
+numpy
+scikit-learn
+shap
+plotly
+streamlit
+fastapi
+uvicorn
+joblib
 ```
 
-## Data Processing
+The complete dependency list is available in:
 
 ```text
-Pandas
-NumPy
+requirements.txt
 ```
 
-## Machine Learning
+---
+
+# 8. Local Setup Instructions
+
+## 8.1 Prerequisites
+
+Install the following:
+
+* Python
+* Git
+* Docker (optional)
+
+The project has been developed using Python.
+
+---
+
+## 8.2 Clone the Repository
+
+Open PowerShell or a terminal and run:
+
+```powershell
+git clone https://github.com/AmjadHafiz123/Parkinson-AI.git
+```
+
+Move into the project directory:
+
+```powershell
+cd Parkinson-AI
+```
+
+---
+
+## 8.3 Create a Virtual Environment
+
+```powershell
+python -m venv .venv
+```
+
+---
+
+## 8.4 Activate the Virtual Environment
+
+On Windows PowerShell:
+
+```powershell
+.venv\Scripts\Activate.ps1
+```
+
+If PowerShell prevents script execution, run:
+
+```powershell
+Set-ExecutionPolicy -Scope Process -ExecutionPolicy RemoteSigned
+```
+
+Then activate the environment:
+
+```powershell
+.venv\Scripts\Activate.ps1
+```
+
+---
+
+## 8.5 Install Dependencies
+
+Install the required Python packages:
+
+```powershell
+pip install -r requirements.txt
+```
+
+---
+
+## 8.6 Run the Streamlit Application Locally
+
+From the project root:
+
+```powershell
+streamlit run app/app.py
+```
+
+The application will normally be available at:
 
 ```text
-Scikit-learn
-Random Forest
+http://localhost:8501
 ```
 
-## Explainable AI
+Open the address in a web browser.
+
+---
+
+# 9. Deployment Details
+
+## 9.1 Cloud Platform
+
+The Streamlit web application is deployed using:
 
 ```text
-SHAP
+Streamlit Community Cloud
 ```
 
-## Visualization
+The deployment is connected to the GitHub repository:
 
 ```text
-Plotly
+https://github.com/AmjadHafiz123/Parkinson-AI
 ```
 
-## Web Application
+The live application is available at:
 
 ```text
-Streamlit
+https://parkinson-ai-app.streamlit.app/
 ```
 
-## Model Serialization
+---
+
+## 9.2 Cloud Deployment Architecture
 
 ```text
-Joblib
+GitHub Repository
+       ↓
+Streamlit Community Cloud
+       ↓
+Python Environment
+       ↓
+requirements.txt
+       ↓
+app/app.py
+       ↓
+Trained Random Forest Model
+       ↓
+SHAP Explainability
+       ↓
+Streamlit Web Interface
 ```
 
-## API
+---
+
+## 9.3 Deployment Process
+
+The application is deployed from the GitHub repository.
+
+The main Streamlit entry point is:
+
+```text
+app/app.py
+```
+
+The cloud environment installs the dependencies defined in:
+
+```text
+requirements.txt
+```
+
+The application then loads the required model and supporting project files from the repository.
+
+The trained model is located at:
+
+```text
+data/processed/shap/random_forest_model.joblib
+```
+
+---
+
+## 9.4 Live Application
+
+The deployed application can be accessed from:
+
+**[https://parkinson-ai-app.streamlit.app/](https://parkinson-ai-app.streamlit.app/)**
+
+No local Python installation is required to access the deployed web application.
+
+A modern web browser is sufficient.
+
+---
+
+# 10. API / Web Application Usage
+
+## 10.1 Streamlit Web Application
+
+The primary user interface is the Streamlit application.
+
+Live URL:
+
+```text
+https://parkinson-ai-app.streamlit.app/
+```
+
+The application provides several sections.
+
+### Dashboard
+
+The Dashboard provides an overview of:
+
+* Dataset information
+* Number of features
+* Model information
+* Model performance
+* Project description
+* Research disclaimer
+
+---
+
+### Patient Assessment
+
+The Patient Assessment section allows users to upload smartwatch movement recordings.
+
+Supported file type:
+
+```text
+.txt
+```
+
+Multiple recordings can be uploaded for the same participant.
+
+The workflow is:
+
+```text
+Upload recordings
+       ↓
+Click Analyze
+       ↓
+Feature extraction
+       ↓
+Patient-level aggregation
+       ↓
+Random Forest prediction
+       ↓
+Probability calculation
+       ↓
+SHAP explanation
+```
+
+---
+
+### Model Performance
+
+The Model Performance section provides information about the trained model and its experimental evaluation.
+
+Example reported metrics include:
+
+| Metric            |  Value |
+| ----------------- | -----: |
+| Accuracy          | 87.32% |
+| Balanced Accuracy | 78.52% |
+| F1 Score          | 92.04% |
+| ROC-AUC           | 86.25% |
+
+These results are experimental model-performance measurements and should not be interpreted as clinical performance.
+
+---
+
+### Feature Analysis
+
+The Feature Analysis section provides global information about important model features using SHAP feature importance.
+
+The feature importance data is generated from:
+
+```text
+data/processed/shap/shap_feature_importance.csv
+```
+
+---
+
+### SHAP Explanation
+
+For an individual assessment, the application displays the features that contributed most strongly to the model's prediction.
+
+The explanation helps answer:
+
+> Why did the machine-learning model make this prediction?
+
+---
+
+## 10.2 FastAPI Application
 
 The project also contains a FastAPI application:
 
@@ -585,32 +861,103 @@ The project also contains a FastAPI application:
 src/api/main.py
 ```
 
-FastAPI can be used to expose prediction functionality through HTTP endpoints.
+FastAPI provides an API-based interface for prediction functionality.
 
-## Containerization
-
-```text
-Docker
-```
-
-## Cloud Deployment
-
-The application can be deployed to a container-compatible cloud platform such as:
+The API architecture is:
 
 ```text
-AWS
-Azure
-Google Cloud
-Render
-Railway
-Streamlit Community Cloud
+Client
+  ↓
+FastAPI
+  ↓
+Feature Builder
+  ↓
+Random Forest Model
+  ↓
+Prediction
+  ↓
+JSON Response
 ```
 
-The exact platform depends on the cloud deployment configuration used for the assignment.
+The API implementation and available endpoints can be inspected in:
+
+```text
+src/api/main.py
+```
 
 ---
 
-# 8. Project Structure
+# 11. Docker Instructions
+
+Docker is included to provide a reproducible application environment.
+
+## 11.1 Build the Docker Image
+
+From the project root:
+
+```powershell
+docker build -t parkinson-ai .
+```
+
+This builds a Docker image named:
+
+```text
+parkinson-ai
+```
+
+---
+
+## 11.2 Run the Docker Container
+
+Run:
+
+```powershell
+docker run -p 8501:8501 parkinson-ai
+```
+
+The Streamlit application can then be accessed at:
+
+```text
+http://localhost:8501
+```
+
+---
+
+## 11.3 Run the Container in the Background
+
+```powershell
+docker run -d -p 8501:8501 --name parkinson-ai parkinson-ai
+```
+
+---
+
+## 11.4 Check Running Containers
+
+```powershell
+docker ps
+```
+
+---
+
+## 11.5 Stop the Container
+
+```powershell
+docker stop parkinson-ai
+```
+
+---
+
+## 11.6 Remove the Container
+
+```powershell
+docker rm parkinson-ai
+```
+
+---
+
+# 12. Project Structure
+
+The main project structure is:
 
 ```text
 Parkinson-AI/
@@ -619,18 +966,15 @@ Parkinson-AI/
 │   └── app.py
 │
 ├── data/
-│   ├── processed/
-│   │   ├── parkinson_features.csv
-│   │   ├── parkinson_patient_features.csv
-│   │   │
-│   │   └── shap/
-│   │       ├── random_forest_model.joblib
-│   │       └── shap_feature_importance.csv
-│   │
-│   └── pads-parkinsons-disease-smartwatch-dataset-1.0.0/
+│   └── processed/
+│       ├── parkinson_features.csv
+│       ├── parkinson_patient_features.csv
+│       │
+│       └── shap/
+│           ├── random_forest_model.joblib
+│           └── shap_feature_importance.csv
 │
 ├── src/
-│   │
 │   ├── api/
 │   │   └── main.py
 │   │
@@ -656,77 +1000,9 @@ Parkinson-AI/
 
 ---
 
-# 9. Local Setup Instructions
+# 13. Data Processing and Model Training
 
-## 9.1 Prerequisites
-
-Install:
-
-* Python
-* Git
-* Docker (optional)
-
-Recommended Python version:
-
-```text
-Python 3.13
-```
-
----
-
-## 9.2 Clone the Repository
-
-```powershell
-git clone <YOUR_GITHUB_REPOSITORY_URL>
-```
-
-Move into the project directory:
-
-```powershell
-cd Parkinson-AI
-```
-
----
-
-## 9.3 Create Virtual Environment
-
-```powershell
-python -m venv .venv
-```
-
----
-
-## 9.4 Activate Virtual Environment
-
-```powershell
-.venv\Scripts\Activate.ps1
-```
-
-If PowerShell blocks script execution:
-
-```powershell
-Set-ExecutionPolicy -Scope Process -ExecutionPolicy RemoteSigned
-```
-
-Then:
-
-```powershell
-.venv\Scripts\Activate.ps1
-```
-
----
-
-## 9.5 Install Dependencies
-
-```powershell
-pip install -r requirements.txt
-```
-
----
-
-# 10. Data Processing
-
-If the raw dataset is available locally, the feature extraction pipeline can be executed.
+The repository contains scripts for processing the dataset and training machine-learning models.
 
 ## Feature Extraction
 
@@ -736,27 +1012,15 @@ Run:
 python src/extract_features.py
 ```
 
-This generates:
+This generates the recording-level processed dataset:
 
 ```text
 data/processed/parkinson_features.csv
 ```
 
-The recording-level dataset contains:
-
-```text
-patient_id
-task
-wrist
-label
-duration
-num_samples
-signal features
-```
-
 ---
 
-## Patient-Level Dataset
+## Patient-Level Dataset Creation
 
 Run:
 
@@ -770,206 +1034,53 @@ This generates:
 data/processed/parkinson_patient_features.csv
 ```
 
-The resulting dataset contains the patient-level feature representation used by the model.
-
 ---
 
-# 11. Model Training
+## Random Forest Training
 
-The project contains multiple model training scripts.
-
-For the Random Forest model:
+Run:
 
 ```powershell
 python src/train_random_forest.py
 ```
 
-The trained model should be saved as:
+The trained model is stored as:
 
 ```text
 data/processed/shap/random_forest_model.joblib
 ```
 
-The project also contains scripts for:
+---
+
+## SHAP Analysis
+
+The project includes SHAP analysis functionality for understanding feature importance and individual predictions.
+
+The resulting feature importance data is stored as:
 
 ```text
-Baseline model
-Patient-level baseline
-Cross-validation
-Random Forest
-XGBoost
-SHAP analysis
+data/processed/shap/shap_feature_importance.csv
 ```
 
 ---
 
-# 12. Inference Testing
+# 14. Inference
 
-The inference pipeline can be tested using:
+The inference component can be tested using:
 
 ```powershell
 python src/inference/predictor.py
 ```
 
-A successful inference test should report:
+The inference pipeline loads:
 
 ```text
-Model loaded
-Expected features: 112
-Dataset loaded
-Features found: 112
+Random Forest model
++
+Patient-level features
 ```
 
-and then display:
-
-```text
-Patient ID
-Actual label
-Prediction
-Healthy probability
-Parkinson's probability
-Top contributing features
-```
-
-Example:
-
-```text
-Prediction: Healthy
-
-Healthy probability: 92.80%
-Parkinson's probability: 7.20%
-```
-
----
-
-# 13. Running the Web Application
-
-Start Streamlit:
-
-```powershell
-streamlit run app/app.py
-```
-
-The terminal will display a local address similar to:
-
-```text
-http://localhost:8501
-```
-
-Open the address in a web browser.
-
----
-
-# 14. Web Application Usage
-
-The Streamlit application contains the following pages:
-
-```text
-🏠 Dashboard
-🔬 Patient Assessment
-📊 Model Performance
-🔎 Feature Analysis
-ℹ️ About
-```
-
----
-
-## 14.1 Dashboard
-
-The Dashboard provides a high-level overview of the system.
-
-It displays:
-
-* Number of patients.
-* Number of model features.
-* Model performance.
-* Dataset class distribution.
-* Project description.
-* Research disclaimer.
-
-The Dashboard explains that the system:
-
-```text
-Processes smartwatch movement data
-        ↓
-Extracts features
-        ↓
-Uses Random Forest
-        ↓
-Produces probabilities
-        ↓
-Uses SHAP for explanation
-```
-
----
-
-# 15. New Patient Assessment
-
-The Patient Assessment page is designed for a **new patient**.
-
-The user does not select a patient ID.
-
-Instead, the user uploads movement recordings.
-
-## Step 1
-
-Open:
-
-```text
-🔬 Patient Assessment
-```
-
-## Step 2
-
-Upload smartwatch recording files.
-
-Supported format:
-
-```text
-.txt
-```
-
-Multiple files can be uploaded.
-
-The uploaded files should belong to the same patient/participant.
-
----
-
-## Step 3
-
-Click:
-
-```text
-🚀 Analyze New Patient
-```
-
----
-
-## Step 4
-
-The system processes the recordings.
-
-Internally:
-
-```text
-Uploaded .txt files
-        ↓
-Temporary processing directory
-        ↓
-Feature extraction
-        ↓
-Feature aggregation
-        ↓
-112 features
-```
-
----
-
-## Step 5
-
-The Random Forest model performs prediction.
-
-The application displays:
+and produces:
 
 ```text
 Prediction
@@ -977,92 +1088,22 @@ Healthy probability
 Parkinson's probability
 ```
 
-Example:
-
-```text
-Prediction:
-Healthy
-
-Healthy:
-92.8%
-
-Parkinson's:
-7.2%
-```
+The inference process is also used by the Streamlit application.
 
 ---
 
-# 16. Prediction Explanation
+# 15. Model Performance
 
-The application provides an explanation section:
+The project reports the following experimental model-performance results:
 
-```text
-🧠 Why did the model make this prediction?
-```
-
-The system calculates SHAP values for the patient's 112 features.
-
-The UI displays a SHAP bar chart.
-
-Conceptually:
-
-```text
-                Parkinson's direction
-                        ↑
-                        │
-signal_5_std       █████████
-signal_6_range     ███████
-signal_5_rms       █████
-                        │
-------------------------0----------------
-                        │
-signal_1_iqr       ███████
-signal_5_energy    █████████
-                        │
-                        ↓
-                  Healthy direction
-```
-
-The application also separates the features into:
-
-```text
-🟢 Factors pushing the prediction toward Healthy
-
-🔴 Factors pushing the prediction toward Parkinson's
-```
-
-Each feature can show:
-
-```text
-Feature name
-Feature value
-SHAP contribution
-```
-
----
-
-# 17. Model Performance
-
-The Model Performance page displays the current experimental model results.
-
-Current reported metrics:
-
-| Metric            |  Value |
+| Metric            | Result |
 | ----------------- | -----: |
 | Accuracy          | 87.32% |
 | Balanced Accuracy | 78.52% |
 | F1 Score          | 92.04% |
 | ROC-AUC           | 86.25% |
 
-These metrics are displayed for research and demonstration purposes.
-
-They should not be interpreted as clinical performance.
-
----
-
-# 18. Cross-Validation
-
-Current cross-validation results:
+Cross-validation results:
 
 | Metric            |   Mean | Standard Deviation |
 | ----------------- | -----: | -----------------: |
@@ -1073,454 +1114,134 @@ Current cross-validation results:
 | F1                | 0.8674 |             0.0242 |
 | ROC-AUC           | 0.7699 |             0.0452 |
 
-The cross-validation results provide an additional estimate of model performance across different validation splits.
+These values represent experimental machine-learning results from the project.
+
+They should not be interpreted as evidence of clinical effectiveness.
 
 ---
 
-# 19. Feature Analysis
+# 16. Responsible AI and Limitations
 
-The Feature Analysis page provides global model explainability.
-
-It uses the generated SHAP feature importance data:
-
-```text
-data/processed/shap/shap_feature_importance.csv
-```
-
-The UI displays the most influential features.
-
-Examples may include:
-
-```text
-signal_5_std_std
-signal_5_energy_std
-signal_5_rms_std
-signal_5_rms_mean
-signal_6_range_std
-signal_5_min_std
-signal_6_median_std
-```
-
-The global feature analysis answers:
-
-> Which movement features are generally important to the trained model?
-
-This is different from individual SHAP analysis.
-
-### Global Explanation
-
-```text
-Feature Analysis
-        ↓
-What features are important overall?
-```
-
-### Individual Explanation
-
-```text
-Patient Assessment
-        ↓
-Why did the model make this particular prediction?
-```
-
----
-
-# 20. About Page
-
-The About page describes the complete project pipeline:
-
-```text
-Raw smartwatch recordings
-        ↓
-Sensor feature extraction
-        ↓
-Recording-level features
-        ↓
-Patient-level aggregation
-        ↓
-112 ML features
-        ↓
-Random Forest classifier
-        ↓
-Healthy / Parkinson's probability
-        ↓
-SHAP explainability
-        ↓
-Streamlit web application
-```
-
-It also provides information about:
-
-* Dataset.
-* Machine-learning approach.
-* Explainable AI.
-* Project purpose.
-* Limitations.
-* Research disclaimer.
-
----
-
-# 21. API
-
-The project contains a FastAPI application:
-
-```text
-src/api/main.py
-```
-
-The API component is intended to provide programmatic access to prediction functionality.
-
-The API architecture is:
-
-```text
-Client
-   ↓
-FastAPI
-   ↓
-Feature Builder
-   ↓
-Random Forest
-   ↓
-Prediction
-   ↓
-JSON Response
-```
-
-To inspect the API implementation:
-
-```powershell
-Get-Content src/api/main.py
-```
-
-The exact API endpoints depend on the implementation in `src/api/main.py`.
-
----
-
-# 22. Docker Instructions
-
-Docker can be used to package the application and its dependencies into a reproducible environment.
-
----
-
-## 22.1 Build Docker Image
-
-From the project root:
-
-```powershell
-docker build -t parkinson-ai .
-```
-
----
-
-## 22.2 Run Docker Container
-
-```powershell
-docker run -p 8501:8501 parkinson-ai
-```
-
-Then open:
-
-```text
-http://localhost:8501
-```
-
----
-
-## 22.3 Run in Background
-
-```powershell
-docker run -d -p 8501:8501 --name parkinson-ai parkinson-ai
-```
-
----
-
-## 22.4 Check Running Container
-
-```powershell
-docker ps
-```
-
----
-
-## 22.5 Stop Container
-
-```powershell
-docker stop parkinson-ai
-```
-
----
-
-## 22.6 Remove Container
-
-```powershell
-docker rm parkinson-ai
-```
-
----
-
-# 23. Cloud Deployment
-
-The application can be deployed as a Dockerized Streamlit application to a cloud platform.
-
-Possible deployment architecture:
-
-```text
-                     Cloud Platform
-                           │
-                           ▼
-                    Docker Container
-                           │
-                           ▼
-                    Streamlit Server
-                           │
-              ┌────────────┴────────────┐
-              │                         │
-              ▼                         ▼
-        ML Model                    SHAP
-              │                         │
-              └────────────┬────────────┘
-                           ▼
-                     Web Interface
-```
-
-Possible cloud platforms include:
-
-* AWS
-* Microsoft Azure
-* Google Cloud
-* Render
-* Railway
-* Streamlit Community Cloud
-
-The final deployment platform should be documented according to the cloud service actually used for the assignment.
-
----
-
-# 24. Deployment Requirements
-
-The deployed application requires:
-
-```text
-Python environment
-        +
-Required Python packages
-        +
-Trained Random Forest model
-        +
-Feature-building code
-        +
-Streamlit application
-```
-
-The model file must be available at:
-
-```text
-data/processed/shap/random_forest_model.joblib
-```
-
-The SHAP feature importance file should be available at:
-
-```text
-data/processed/shap/shap_feature_importance.csv
-```
-
-if global feature analysis is required.
-
----
-
-# 25. End-to-End Project Workflow
-
-The complete project workflow is:
-
-```text
-                    PHYSIONET
-                       │
-                       ▼
-        Parkinson's Smartwatch Dataset
-                       │
-                       ▼
-             Raw Sensor Recordings
-                       │
-                       ▼
-              Feature Extraction
-                       │
-          ┌────────────┴────────────┐
-          │                         │
-          ▼                         ▼
-      Six Sensor                Statistical
-       Channels                  Features
-          │                         │
-          └────────────┬────────────┘
-                       ▼
-             Recording-Level Data
-                       │
-                       ▼
-             Patient-Level Grouping
-                       │
-                       ▼
-                 Mean + Std
-                       │
-                       ▼
-                 112 Features
-                       │
-                       ▼
-              Random Forest Model
-                       │
-                       ▼
-                Model Prediction
-                       │
-              ┌────────┴─────────┐
-              │                  │
-              ▼                  ▼
-        Probability          SHAP Values
-              │                  │
-              └────────┬─────────┘
-                       ▼
-                 Streamlit UI
-                       │
-                       ▼
-              New Patient Upload
-                       │
-                       ▼
-                 Final Result
-                       │
-          ┌────────────┴────────────┐
-          │                         │
-          ▼                         ▼
-       Prediction              Explanation
-          │                         │
-          ▼                         ▼
-    Healthy/Parkinson's        SHAP Features
-```
-
----
-
-# 26. Responsible AI
-
-The project incorporates basic responsible-AI principles.
+Parkinson AI is an academic research prototype.
 
 ## Explainability
 
-The system provides SHAP explanations instead of only displaying a prediction.
+The application uses SHAP to make individual machine-learning predictions more interpretable.
 
 ## Transparency
 
-The application shows:
+The application provides information about:
 
-* Model type.
-* Feature count.
-* Probabilities.
-* Model performance.
+* The machine-learning model.
+* Model probabilities.
 * Important features.
+* SHAP contributions.
+* Model performance.
 
-## Limitations
+## Dataset Limitations
 
-The application clearly communicates that the model is a research prototype.
-
-## Human Oversight
-
-Predictions should not be treated as medical decisions.
-
-Professional clinical assessment remains necessary for real-world medical use.
-
----
-
-# 27. Limitations
-
-The project has several limitations.
-
-### 1. Research Prototype
-
-The system has been developed as an MSc academic project.
-
-### 2. No Clinical Validation
-
-The model has not been clinically validated.
-
-### 3. Dataset Limitations
-
-Machine-learning performance depends on the characteristics and distribution of the dataset.
-
-### 4. Generalisation
+The performance of the model depends on the dataset used during training.
 
 The model may not generalise to:
 
+* Different populations.
 * Different smartwatch devices.
 * Different sensor configurations.
-* Different populations.
 * Different recording environments.
-* Different clinical settings.
+* Clinical populations outside the training dataset.
 
-### 5. Class Imbalance
+## Class Imbalance
 
-The processed dataset contains more Parkinson's examples than Healthy examples.
+The dataset contains different numbers of Healthy and Parkinson's examples.
 
-Therefore, accuracy alone should not be used to judge model quality.
+Therefore, multiple evaluation metrics are considered rather than relying only on accuracy.
 
-### 6. Explainability Limitations
+## Explainability Limitations
 
-SHAP explains model behaviour.
+SHAP explains the behaviour of the trained model.
 
-It does not prove that a feature causes Parkinson's disease or that the feature represents a clinical biomarker.
+A SHAP contribution does not establish:
 
-### 7. No Medical Diagnosis
-
-The output is a machine-learning classification and should not be interpreted as a diagnosis.
-
----
-
-# 28. Example Prediction
-
-An example prediction may look like:
-
-```text
-========================================
-PARKINSON AI ASSESSMENT
-========================================
-
-Prediction:
-Healthy
-
-Healthy Probability:
-92.8%
-
-Parkinson's Probability:
-7.2%
-
-========================================
-TOP CONTRIBUTING FEATURES
-========================================
-
-signal_5_std
-Contribution: -0.0274
-
-signal_5_energy_std
-Contribution: -0.0238
-
-signal_5_rms_std
-Contribution: -0.0229
-
-signal_5_rms_mean
-Contribution: -0.0229
-
-signal_6_range_std
-Contribution: -0.0223
-```
-
-The web interface provides the same information in a visual format.
+* Medical causation.
+* Biological causation.
+* A clinical biomarker.
+* A medical diagnosis.
 
 ---
 
-# 29. Research Interpretation
+# 17. Security and Privacy Considerations
 
-The project demonstrates the integration of:
+The application processes movement recordings supplied by the user.
+
+Users should avoid uploading personally identifiable or sensitive information unless appropriate safeguards are in place.
+
+The application is an academic prototype and should not be considered a production healthcare information system.
+
+For production deployment, additional controls would be required, including:
+
+* Authentication.
+* Authorisation.
+* Secure data storage.
+* Encryption.
+* Audit logging.
+* Data-retention policies.
+* Privacy controls.
+* Healthcare regulatory compliance where applicable.
+
+---
+
+# 18. Medical Disclaimer
+
+> **Parkinson AI is an academic and research prototype and is not a medical device.**
+
+The predictions produced by the system are machine-learning outputs based on smartwatch movement data.
+
+They:
+
+* Do not constitute a medical diagnosis.
+* Should not be used to make clinical decisions.
+* Should not replace professional medical assessment.
+* Do not establish the presence or absence of Parkinson's disease.
+
+For medical concerns, users should consult a qualified healthcare professional.
+
+---
+
+# 19. Future Improvements
+
+Possible future improvements include:
+
+* Larger and more diverse datasets.
+* Additional smartwatch sensor modalities.
+* Improved class balancing.
+* Hyperparameter optimisation.
+* External validation.
+* More robust cross-validation.
+* Probability calibration.
+* Advanced time-series models.
+* Deep-learning approaches.
+* Model monitoring.
+* Automated cloud deployment.
+* Authentication and user management.
+* Secure uploaded-file handling.
+* Prediction audit logging.
+* Additional SHAP visualisations.
+* Integration between the Streamlit frontend and FastAPI backend.
+
+---
+
+# 20. Summary
+
+Parkinson AI demonstrates an end-to-end explainable machine-learning solution for analysing smartwatch movement data.
+
+The system combines:
 
 ```text
-Wearable Sensor Data
+Smartwatch Sensor Data
         +
 Feature Engineering
         +
-Patient-Level Machine Learning
+Patient-Level Aggregation
         +
 Random Forest
         +
@@ -1535,129 +1256,99 @@ Docker
 Cloud Deployment
 ```
 
-The main research contribution is an end-to-end explainable machine-learning workflow for smartwatch movement data.
-
----
-
-# 30. Dataset Citation
-
-The project uses the Parkinson's Disease Smartwatch Dataset hosted by PhysioNet.
-
-Official dataset page:
-
-[https://physionet.org/content/parkinsons-disease-smartwatch/1.0.0/](https://physionet.org/content/parkinsons-disease-smartwatch/1.0.0/)
-
-Users of the dataset should follow the citation, licensing, and usage requirements specified by PhysioNet and the dataset authors.
-
----
-
-# 31. Future Improvements
-
-Potential future improvements include:
-
-* Larger and more diverse datasets.
-* Additional smartwatch sensor modalities.
-* Improved class balancing.
-* Hyperparameter optimisation.
-* External validation.
-* More robust cross-validation.
-* Calibration of prediction probabilities.
-* More advanced time-series models.
-* Deep-learning approaches.
-* Model monitoring after deployment.
-* Automated cloud deployment.
-* Authentication and user management.
-* Secure storage of uploaded recordings.
-* Prediction audit logs.
-* More detailed SHAP visualisations.
-* REST API integration with the Streamlit frontend.
-
----
-
-# 32. Summary
-
-Parkinson AI provides an end-to-end explainable machine-learning system for smartwatch movement analysis.
-
-The system:
+The final workflow is:
 
 ```text
-1. Receives smartwatch recordings
-2. Extracts movement features
-3. Aggregates features at patient level
-4. Generates 112 machine-learning features
-5. Uses a Random Forest classifier
-6. Produces Healthy/Parkinson's probabilities
-7. Uses SHAP to explain predictions
-8. Displays results through Streamlit
-9. Provides API functionality through FastAPI
-10. Supports Docker-based deployment
+1. Obtain smartwatch movement recordings
+2. Extract statistical movement features
+3. Aggregate recordings at patient level
+4. Generate 112 machine-learning features
+5. Apply the trained Random Forest model
+6. Generate Healthy/Parkinson's probabilities
+7. Calculate SHAP explanations
+8. Display the results through Streamlit
+9. Deploy the application using Streamlit Community Cloud
+10. Provide Docker support for reproducible deployment
 ```
 
-The final application demonstrates how wearable sensor data, machine learning, Explainable AI, web technologies, APIs, containers, and cloud deployment can be combined into a single research prototype.
+The project demonstrates how wearable sensor data, machine learning, Explainable AI, web technologies, APIs, containerisation, and cloud deployment can be combined into a complete AI application.
 
 ---
 
-# ⚠️ Medical Disclaimer
+# 21. Project Links
 
-**Parkinson AI is an academic/research prototype and is not a medical device.**
-
-The predictions generated by this application are machine-learning outputs based on smartwatch movement data.
-
-They:
-
-* Do not constitute a medical diagnosis.
-* Should not be used to make clinical decisions.
-* Should not replace professional medical assessment.
-* Do not establish the presence or absence of Parkinson's disease.
-
-For real-world medical concerns, users should consult a qualified healthcare professional.
+| Resource                   | Link                                                                                                                                     |
+| -------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------- |
+| GitHub Repository          | [https://github.com/AmjadHafiz123/Parkinson-AI](https://github.com/AmjadHafiz123/Parkinson-AI)                                           |
+| Live Streamlit Application | [https://parkinson-ai-app.streamlit.app/](https://parkinson-ai-app.streamlit.app/)                                                       |
+| PhysioNet Dataset          | [https://physionet.org/content/parkinsons-disease-smartwatch/1.0.0/](https://physionet.org/content/parkinsons-disease-smartwatch/1.0.0/) |
 
 ---
 
-# 👨‍🎓 MSc Project
+# 22. MSc Project Information
 
 **Project:** Parkinson AI
 
-**Purpose:** MSc Cloud Computing / Artificial Intelligence Research Project
+**Project Type:** MSc Academic Research Project
 
-**Core Technologies:**
+**Application:** Explainable AI for Parkinson's Disease Movement Classification
 
-```text
-Python
-Pandas
-NumPy
-Scikit-learn
-Random Forest
-SHAP
-Plotly
-Streamlit
-FastAPI
-Joblib
-Docker
-```
+**Primary Web Framework:** Streamlit
 
-**Dataset:**
+**Machine-Learning Model:** Random Forest Classifier
 
-Parkinson's Disease Smartwatch Dataset
+**Explainable AI Framework:** SHAP
 
-**Dataset Provider:**
+**API Framework:** FastAPI
 
-PhysioNet
+**Containerisation:** Docker
 
-**Dataset URL:**
+**Cloud Platform:** Streamlit Community Cloud
 
-[https://physionet.org/content/parkinsons-disease-smartwatch/1.0.0/](https://physionet.org/content/parkinsons-disease-smartwatch/1.0.0/)
+**Dataset Provider:** PhysioNet
+
+**Dataset:** Parkinson's Disease Smartwatch Dataset
+
+**GitHub:**
+[https://github.com/AmjadHafiz123/Parkinson-AI](https://github.com/AmjadHafiz123/Parkinson-AI)
+
+**Live Application:**
+[https://parkinson-ai-app.streamlit.app/](https://parkinson-ai-app.streamlit.app/)
+
+---
+
+## ⚠️ Final Disclaimer
+
+This project is developed for academic and research purposes. It demonstrates the technical implementation of an explainable machine-learning pipeline using smartwatch movement data.
+
+**The system is not intended to diagnose Parkinson's disease or replace professional medical assessment.**
 
 ````
 
-### One thing I recommend before you submit
+### After replacing your README
 
-There is one **important consistency issue** in your current project: your README says **355 patients / 79 Healthy / 276 Parkinson's**, while some of your UI metrics and model-performance values appear to come from different experiments. For an MSc submission, the README, Dashboard, Model Performance page, and actual training output should all use the **same final experiment's numbers**.
+Run these commands from your project folder:
 
-Also, don't leave placeholders like:
-
-```text
-<YOUR_GITHUB_REPOSITORY_URL>
+```powershell
+git add README.md
+git commit -m "Finalize README documentation"
+git push origin master
 ````
 
-or claim a cloud provider you haven't actually deployed to. Replace those with the actual deployment details before submission.
+Your repository will then have all **11 requirements explicitly covered**:
+
+| Requirement                 | README section |
+| --------------------------- | -------------- |
+| 1. Problem Statement        | **Section 1**  |
+| 2. Use Case                 | **Section 2**  |
+| 3. Solution Overview        | **Section 3**  |
+| 4. Dataset                  | **Section 4**  |
+| 5. AI/ML Approach           | **Section 5**  |
+| 6. Application Architecture | **Section 6**  |
+| 7. Technology Stack         | **Section 7**  |
+| 8. Local Setup              | **Section 8**  |
+| 9. Deployment Details       | **Section 9**  |
+| 10. API/Web Usage           | **Section 10** |
+| 11. Docker Instructions     | **Section 11** |
+
+This version also makes it very clear to the assessor that **Streamlit is the actual web application**, **Streamlit Community Cloud is the actual deployment platform**, and the **live application is available at your provided URL**.
